@@ -4,6 +4,17 @@
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+<input type="time" @bind="Time1"/>
+<input type="time" @bind="Time2"/>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<span>@Diff</span>
+
+@code {
+
+    DateTime Time1 { get; set; }
+    DateTime Time2 { get; set; }
+
+    TimeSpan Diff => Time2 - Time1;
+
+}
+
