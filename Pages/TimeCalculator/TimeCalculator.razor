@@ -26,7 +26,7 @@
         }
     </div>
     <div class="result-preview">
-        
+        @Result
     </div>
     <div class="calculator-buttons">
         <CalculatorButton BootstrapStyle="light" ButtonID="Clear" OnButtonClicked="onButtonClicked">
@@ -68,8 +68,45 @@
 
     List<IMathComponent> mathComponents = new List<IMathComponent>();
 
+    TimeSpan? _result = null;
+    string? Result {
+        get {
+            if (_result is null) return "";
+            string res = "=";
+            int years = 0, months = 0, weeks = 0;
+            if (_result.Value.TotalDays / 365 >= 1) {
+                years = (int)(_result.Value.TotalDays / 365.0);
+                res += $" {years} Year";
+            }
+            if (_result.Value.TotalDays / 30 >= 1) {
+                months = (int)(_result.Value.TotalDays / 30.0) - years * 12;
+                res += $" {months} Month";
+            }
+            if (_result.Value.TotalDays / 30 >= 1) {
+                weeks = (int)(_result.Value.TotalDays / 7.0) - months * 4 - years * 48;
+                res += $" {weeks} Week";
+            }
+            if (_result.Value.TotalDays > 0) {
+                var days = _result.Value.TotalDays - weeks * 7 - months * 30 - years * 365;
+                res += $" {days} Day";
+            }
+            if (_result.Value.Hours > 0) {
+                res += $" {_result.Value.Hours} Hour";
+            }
+            if (_result.Value.Minutes > 0) {
+                res += $" {_result.Value.Minutes} Min";
+            }
+            if (_result.Value.Seconds > 0) {
+                res += $" {_result.Value.Seconds} Sec";
+            }
+            if (_result.Value.Milliseconds > 0) {
+                res += $" {_result.Value.Milliseconds} MSec";
+            }
+            return res;
+        }
+    }
+
     void onButtonClicked(string id) {
-        Console.WriteLine(id);
         var currentOperandGroup = mathComponents.LastOrDefault() as OperandGroup;
         var lastOperator = mathComponents.LastOrDefault() as Operator;
         var lastOperand = currentOperandGroup?.Operands.LastOrDefault();

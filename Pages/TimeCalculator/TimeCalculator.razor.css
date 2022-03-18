@@ -22,6 +22,12 @@
     color: var(--bs-primary);
 }
 
+.result-preview {
+    text-align: end;
+    color: var(--bs-secondary);
+    margin: auto 0;
+}
+
 .calculator-buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
