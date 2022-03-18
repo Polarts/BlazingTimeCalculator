@@ -1,0 +1,172 @@
+@page "/TimeCalculator"
+
+<PageTitle>Time Calculator</PageTitle>
+
+<div class="time-calculator-wrapper">
+    <div class="operand-container">
+        @foreach (var mathComponent in mathComponents)
+        {
+            switch(mathComponent) 
+            {
+                case OperandGroup _group:
+                    foreach (var _op in _group.Operands) 
+                    {
+                        <span class="number">@_op.Number</span><span class="operand-type">@_op.Type</span>
+                    }
+                break;
+
+                case Operand _operand:
+                    <span class="number">@_operand.Number</span> <span class="operand-type">@_operand.Type</span>
+                break;
+
+                case Operator _operator:
+                    <span class="operator">@_operator.Type</span>;
+                break;
+            }
+        }
+    </div>
+    <div class="result-preview">
+        
+    </div>
+    <div class="calculator-buttons">
+        <CalculatorButton BootstrapStyle="light" ButtonID="Clear" OnButtonClicked="onButtonClicked">
+            <b>C</b>
+        </CalculatorButton>
+        <CalculatorButton BootstrapStyle="light" ButtonID="History" OnButtonClicked="onButtonClicked">
+            <span class="oi oi-clock" aria-hidden="true"></span>
+        </CalculatorButton>
+        <CalculatorButton BootstrapStyle="light" ButtonID="Convert" OnButtonClicked="onButtonClicked">
+            <span class="oi oi-loop" aria-hidden="true"></span>
+        </CalculatorButton>
+        <CalculatorButton BootstrapStyle="light" ButtonID="Backspace" OnButtonClicked="onButtonClicked">
+            <span class="oi oi-delete" aria-hidden="true"></span>
+        </CalculatorButton>
+        @foreach (var operandType in operandTypes)
+        {
+            <CalculatorButton BootstrapStyle="primary" ButtonID="@operandType" OnButtonClicked="onButtonClicked">
+                @operandType
+            </CalculatorButton>
+        }
+        @foreach (var button in buttons) 
+        {
+            <CalculatorButton ButtonID="@button" OnButtonClicked="onButtonClicked">
+                @button
+            </CalculatorButton>
+        }
+    </div>
+</div>
+
+@code {
+    
+    string[] operandTypes = Enum.GetNames(typeof(OperandType)).TakeLast(8).ToArray();
+    string[] buttons = {
+        "7", "8", "9", "/",
+        "4", "5", "6", "x",
+        "1", "2", "3", "-",
+        "0", ".", "=", "+"
+    };
+
+    List<IMathComponent> mathComponents = new List<IMathComponent>();
+
+    void onButtonClicked(string id) {
+        Console.WriteLine(id);
+        var currentOperandGroup = mathComponents.LastOrDefault() as OperandGroup;
+        var lastOperator = mathComponents.LastOrDefault() as Operator;
+        var lastOperand = currentOperandGroup?.Operands.LastOrDefault();
+        switch(id) {
+
+            case "Clear": 
+                mathComponents.Clear();
+            break;
+
+            case "History":
+            break;
+
+            case "Convert":
+            break;
+
+            case "Backspace":
+                switch (mathComponents.LastOrDefault()) 
+                {
+                    case OperandGroup _group:
+                        if (lastOperand is null) {
+                            mathComponents.Remove(_group);
+                        } else if (lastOperand.Type != null) {
+                            lastOperand.Type = null;
+                        } else if (lastOperand.Number.Length <= 1) {
+                            _group.Operands.Remove(lastOperand);
+                        } else {
+                            lastOperand.Number = lastOperand.Number.Substring(0, lastOperand.Number.Length-1);
+                        }
+                    break;
+
+                    case Operator _operator:
+                        mathComponents.Remove(_operator);
+                    break;
+                }
+            break;
+
+            case "=":
+                if (mathComponents.Any(mc => mc is Operator) 
+                    && mathComponents.Count(mc => mc is OperandGroup) >= 2)
+                {
+                    // TODO the math
+                } else {
+                    // TODO trigger convert
+                }
+            break;
+
+            default:
+                if (operandTypes.Contains(id)) {
+                    var selectedType = (OperandType)Enum.Parse(typeof(OperandType), id);
+                    if (currentOperandGroup != null 
+                        && lastOperand?.IsLocked == false
+                        && !currentOperandGroup.Operands.Any(op => op.Type == selectedType)) 
+                    {
+                        lastOperand.Type = selectedType;
+                        if (lastOperand.Number.EndsWith(".")) {
+                            lastOperand.Number = lastOperand.Number.Substring(0, lastOperand.Number.Length - 1);
+                        }
+                    }
+                }
+                if (buttons.Contains(id)) {
+                    if (int.TryParse(id, out int number)) {
+                        if (currentOperandGroup is null) 
+                        {
+                            currentOperandGroup = new OperandGroup();
+                            currentOperandGroup.Operands.Add(new Operand 
+                            {
+                                Number = id,
+                                IsLocked = lastOperator != null && "x/".Contains(lastOperator.Type ?? "_")
+                            });
+                            mathComponents.Add(currentOperandGroup);
+                        } else {
+                            if (lastOperand is null) {
+                                currentOperandGroup.Operands.Add(
+                                    lastOperand = new Operand()
+                                );
+                            }
+                            if (lastOperand.Type is null) {
+                                lastOperand.Number += id;
+                            } else {
+                                currentOperandGroup.Operands.Add(new Operand
+                                {
+                                    Number = id
+                                });
+                            }
+                        }
+                    } else {
+                        if (id == "." && currentOperandGroup != null) {
+                            currentOperandGroup.Operands.Last().Number += id;
+                        } else if (lastOperator != null) {
+                            lastOperator.Type = id;
+                        } else {
+                            mathComponents.Add(new Operator { Type = id });
+                            currentOperandGroup = null;
+                        }
+                    }
+                }
+            break;
+        }
+    }
+}
