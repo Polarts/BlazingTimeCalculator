@@ -1,3 +1,1 @@
-public interface IMathComponent {
-    
-}
+public interface IMathComponent { }
