@@ -1,0 +1,39 @@
+.time-calculator-wrapper {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-rows: 1fr 0.25fr 3fr;
+}
+
+.operand-container {
+    margin: 5px;
+}
+
+.operand-container span {
+    margin: 0 3px;
+}
+
+.number, .operator {
+    font-size: 1.5em;
+}
+
+.operand-type {
+    font-weight: bold;
+    color: var(--bs-primary);
+}
+
+.result-preview {
+    text-align: end;
+    color: var(--bs-secondary);
+    margin: auto 0;
+}
+
+.calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 0.7fr) repeat(4, 1fr);
+}
+
+::deep .calculator-buttons button {
+    margin: 5px;
+}

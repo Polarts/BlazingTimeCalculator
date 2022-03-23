@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingTimeCalculator", "BlazingTimeCalculator\BlazingTimeCalculator.csproj", "{0BD0C835-505C-46B4-8B5D-8AF34AF1AEB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{2AAEE523-9F35-488C-9FF3-0DE7134C8F9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{E2FDC19C-E218-497A-BB15-F2F4EE4A8747}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BD0C835-505C-46B4-8B5D-8AF34AF1AEB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD0C835-505C-46B4-8B5D-8AF34AF1AEB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD0C835-505C-46B4-8B5D-8AF34AF1AEB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD0C835-505C-46B4-8B5D-8AF34AF1AEB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AAEE523-9F35-488C-9FF3-0DE7134C8F9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AAEE523-9F35-488C-9FF3-0DE7134C8F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AAEE523-9F35-488C-9FF3-0DE7134C8F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AAEE523-9F35-488C-9FF3-0DE7134C8F9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2FDC19C-E218-497A-BB15-F2F4EE4A8747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2FDC19C-E218-497A-BB15-F2F4EE4A8747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2FDC19C-E218-497A-BB15-F2F4EE4A8747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2FDC19C-E218-497A-BB15-F2F4EE4A8747}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7BA6198A-47F2-407C-B13B-F1139F08185B}
+	EndGlobalSection
+EndGlobal
