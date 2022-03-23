@@ -59,12 +59,15 @@
             }
 
             Operator firstLoadedOp = loadedOperators.First();
-            
-            for (int i=1; i<loadedOperators.Count; i++)
+
+            if (loadedOperators.Count > 1)
             {
-                firstLoadedOp.Operand2 = OperandGroup.FromTimeSpan(loadedOperators[i].GetResult());
-                if (i < loadedOperators.Count - 1)
-                    loadedOperators[i+1].Operand1 = firstLoadedOp.Operand2;
+                for (int i = 1; i < loadedOperators.Count; i++)
+                {
+                    firstLoadedOp.Operand2 = OperandGroup.FromTimeSpan(loadedOperators[i].GetResult());
+                    if (i < loadedOperators.Count - 1)
+                        loadedOperators[i + 1].Operand1 = firstLoadedOp.Operand2;
+                }
             }
 
             Result = OperandGroup.FromTimeSpan(firstLoadedOp.GetResult());

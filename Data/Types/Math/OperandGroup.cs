@@ -38,17 +38,19 @@ namespace Data.Types.Math
             if (timeSpan.TotalDays / 30 >= 1)
             {
                 months = (int)(timeSpan.TotalDays / 30.0) - years * 12;
-                group.Operands.Add(new Operand { Number = months.ToString(), Type = OperandType.Month });
+                if (months > 0)
+                    group.Operands.Add(new Operand { Number = months.ToString(), Type = OperandType.Month });
             }
-            if (timeSpan.TotalDays / 30 >= 1)
+            if (timeSpan.TotalDays / 7 >= 1)
             {
-                weeks = (int)(timeSpan.TotalDays / 7.0) - months * 4 - years * 48;
-                group.Operands.Add(new Operand { Number = weeks.ToString(), Type = OperandType.Week });
+                weeks = (int)System.Math.Floor(timeSpan.TotalDays / 7.0 - months * 4 - years * 52);
+                if (weeks > 0)
+                    group.Operands.Add(new Operand { Number = weeks.ToString(), Type = OperandType.Week });
             }
             if (timeSpan.TotalDays > 0)
             {
-                var days = timeSpan.TotalDays - weeks * 7 - months * 30 - years * 365;
-                group.Operands.Add(new Operand { Number = days.ToString(), Type = OperandType.Month });
+                var days = (int)System.Math.Round(timeSpan.TotalDays - weeks * 7 - months * 30 - years * 365);
+                group.Operands.Add(new Operand { Number = days.ToString(), Type = OperandType.Day });
             }
             if (timeSpan.Hours > 0)
             {

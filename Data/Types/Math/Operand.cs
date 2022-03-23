@@ -22,19 +22,41 @@ namespace Data.Types.Math
 
         #region Methods
 
-        public TimeSpan ToTimeSpan() =>
-            Type switch
+        public TimeSpan ToTimeSpan()
+        {
+            if (int.TryParse(Number, out var value))
             {
-                OperandType.Year => TimeSpan.FromDays(int.Parse(Number) * 365),
-                OperandType.Month => TimeSpan.FromDays(int.Parse(Number) * 30),
-                OperandType.Week => TimeSpan.FromDays(int.Parse(Number) * 7),
-                OperandType.Day => TimeSpan.FromDays(int.Parse(Number)),
-                OperandType.Hour => TimeSpan.FromHours(int.Parse(Number)),
-                OperandType.Min => TimeSpan.FromMinutes(int.Parse(Number)),
-                OperandType.Sec => TimeSpan.FromSeconds(int.Parse(Number)),
-                OperandType.MSec => TimeSpan.FromMilliseconds(int.Parse(Number)),
-                _ => TimeSpan.FromTicks(int.Parse(Number))
-            };
+                switch (Type)
+                {
+                    case OperandType.Year:
+                        return TimeSpan.FromDays(value * 365);
+
+                    case OperandType.Month:
+                        return TimeSpan.FromDays(value * 30);
+
+                    case OperandType.Week:
+                        return TimeSpan.FromDays(value * 7);
+
+                    case OperandType.Day:
+                        return TimeSpan.FromDays(value);
+
+                    case OperandType.Hour:
+                        return TimeSpan.FromHours(value);
+
+                    case OperandType.Min:
+                        return TimeSpan.FromMinutes(value);
+
+                    case OperandType.Sec:
+                        return TimeSpan.FromSeconds(value);
+
+                    case OperandType.MSec:
+                        return TimeSpan.FromMilliseconds(value);
+
+                    default: return TimeSpan.Zero;
+                }
+            }
+            return TimeSpan.Zero;
+        } 
 
         public override string ToString()
         {

@@ -8,12 +8,9 @@ namespace Tests
     [TestClass]
     public class MathTests
     {
-        [TestMethod]
-        public void TestMultiplication()
+        static OperandGroup operand1 = new OperandGroup
         {
-            var operand1 = new OperandGroup
-            {
-                Operands = new List<Operand>
+            Operands = new List<Operand>
                 {
                     new Operand
                     {
@@ -31,7 +28,25 @@ namespace Tests
                         Type = OperandType.Hour
                     }
                 }
-            };
+        };
+
+        static TimeSpan operand1TS = TimeSpan.FromHours(1) + TimeSpan.FromDays(366);
+
+        [TestMethod]
+        public void TestToTimeSpanConversion()
+        {
+            Assert.AreEqual(operand1.ToTimeSpan(), operand1TS);
+        }
+
+        [TestMethod]
+        public void TestFromTimeSpanConversion()
+        {
+            Assert.AreEqual(operand1.ToString(), OperandGroup.FromTimeSpan(operand1TS).ToString());
+        }
+
+        [TestMethod]
+        public void TestMultiplication()
+        {
             var operand2 = new OperandGroup
             {
                 Operands = new List<Operand>
