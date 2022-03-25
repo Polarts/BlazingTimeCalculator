@@ -29,10 +29,11 @@ namespace Data.Types.Math
                     return Operand1.ToTimeSpan() - Operand2.ToTimeSpan();
 
                 case "x":
-                    return TimeSpan.FromMilliseconds(Operand1.ToTimeSpan().TotalMilliseconds * Operand2.ToTimeSpan().TotalMilliseconds);
+                    //throw new Exception($"{Operand1.ToTimeSpan()} x {Operand2.Operands[0].Number}");
+                    return TimeSpan.FromMilliseconds(Operand1.ToTimeSpan().TotalMilliseconds * int.Parse(Operand2.Operands[0].Number));
 
                 case "/":
-                    return TimeSpan.FromMilliseconds(Operand1.ToTimeSpan().TotalMilliseconds / Operand2.ToTimeSpan().TotalMilliseconds);
+                    return TimeSpan.FromMilliseconds(Operand1.ToTimeSpan().TotalMilliseconds / int.Parse(Operand2.Operands[0].Number));
 
                 default: return TimeSpan.Zero;
 

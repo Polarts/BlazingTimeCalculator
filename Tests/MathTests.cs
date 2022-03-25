@@ -79,5 +79,180 @@ namespace Tests
 
             Assert.AreEqual(expectedResult, equation.Result?.ToTimeSpan());
         }
+
+        [TestMethod]
+        public void TestDivision()
+        {
+            var operand2 = new OperandGroup
+            {
+                Operands = new List<Operand>
+                {
+                    new Operand
+                    {
+                        Number = "2",
+                        Type = null,
+                    }
+                }
+            };
+            var equation = new Equation
+            {
+                MathComponents = new List<IMathComponent>
+                {
+                    operand1,
+                    new Operator
+                    {
+                        Type = "/",
+                        Operand1 = operand1,
+                        Operand2 = operand2,
+                    },
+                    operand2
+                }
+            };
+
+            equation.Calculate();
+
+            var expectedResult = TimeSpan.FromMilliseconds(operand1TS.TotalMilliseconds / 2);
+
+            Assert.AreEqual(expectedResult, equation.Result?.ToTimeSpan());
+        }
+
+        [TestMethod]
+        public void TestAddition()
+        {
+            var operand2 = new OperandGroup
+            {
+                Operands = new List<Operand>
+                {
+                    new Operand
+                    {
+                        Number = "1",
+                        Type = OperandType.Day
+                    },
+                    new Operand
+                    {
+                        Number = "1",
+                        Type = OperandType.Month
+                    }
+                }
+            };
+
+            var equation = new Equation
+            {
+                MathComponents = new List<IMathComponent>
+                {
+                    operand1,
+                    new Operator
+                    {
+                        Type = "+",
+                        Operand1 = operand1,
+                        Operand2 = operand2,
+                    },
+                    operand2
+                }
+            };
+
+
+            var expectedResult = TimeSpan.FromHours(1) + TimeSpan.FromDays(397);
+
+            equation.Calculate();
+
+            Assert.AreEqual(expectedResult, equation.Result!.ToTimeSpan());
+        }
+
+        [TestMethod]
+        public void TestSubtraction()
+        {
+            var operand2 = new OperandGroup
+            {
+                Operands = new List<Operand>
+                {
+                    new Operand
+                    {
+                        Number = "1",
+                        Type = OperandType.Day
+                    },
+                    new Operand
+                    {
+                        Number = "1",
+                        Type = OperandType.Month
+                    }
+                }
+            };
+
+            var equation = new Equation
+            {
+                MathComponents = new List<IMathComponent>
+                {
+                    operand1,
+                    new Operator
+                    {
+                        Type = "-",
+                        Operand1 = operand1,
+                        Operand2 = operand2,
+                    },
+                    operand2
+                }
+            };
+
+
+            var expectedResult = TimeSpan.FromHours(1) + TimeSpan.FromDays(335);
+
+            equation.Calculate();
+
+            Assert.AreEqual(expectedResult, equation.Result!.ToTimeSpan());
+        }
+
+        [TestMethod]
+        public void TestComplexEquation()
+        {
+            List<OperandGroup> operands = new List<OperandGroup>
+            {
+                new OperandGroup
+                {
+                    Operands = new List<Operand>
+                    {
+                        new Operand { Number = "20", Type = OperandType.Day },
+                    }
+                },
+                new OperandGroup
+                {
+                    Operands = new List<Operand>
+                    {
+                        new Operand { Number = "2" }
+                    }
+                },
+                new OperandGroup
+                {
+                    Operands = new List<Operand>
+                    {
+                        new Operand { Number = "3", Type = OperandType.Day }
+                    }
+                }
+            };
+
+            var equation = new Equation
+            {
+                MathComponents = new List<IMathComponent>
+                {
+                    operands[0],
+                    new Operator
+                    {
+                        Type = "x"
+                    },
+                    operands[1],
+                    new Operator 
+                    {
+                        Type = "+"
+                    },
+                    operands[2]
+
+                }
+            };
+
+            var expectedResult = TimeSpan.FromDays(43);
+            equation.Calculate();
+
+            Assert.AreEqual(expectedResult, equation.Result!.ToTimeSpan());
+        }
     }
 }
