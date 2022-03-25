@@ -37,8 +37,6 @@
                 }
             }
 
-            Console.WriteLine(loadedOperators.Select(op => $"{op.Operand1} {op.Type} {op.Operand2} | ").Aggregate("", (accum, curr) => accum + curr));
-
             // clear off priority operators
             for (int i = 1; i < loadedOperators.Count - 1; i++)
             {
@@ -60,9 +58,23 @@
                 }
             }
 
-            Console.WriteLine(loadedOperators.Select(op => $"{op.Operand1} {op.Type} {op.Operand2} | ").Aggregate("", (accum, curr) => accum + curr));
-
             Operator firstLoadedOp = loadedOperators.First();
+
+            if (firstLoadedOp.Type == "x" || firstLoadedOp.Type == "/")
+            {
+                firstLoadedOp.Operand1 = OperandGroup.FromTimeSpan(firstLoadedOp.GetResult());
+                if (loadedOperators.Count > 1)
+                {
+                    firstLoadedOp.Operand2 = loadedOperators[1].Operand2;
+                    firstLoadedOp.Type = loadedOperators[1].Type;
+                    loadedOperators.RemoveAt(1);
+                }
+                else
+                {
+                    Result = firstLoadedOp.Operand1;
+                    return;
+                }
+            }
 
             if (loadedOperators.Count > 1)
             {
@@ -73,8 +85,6 @@
                         loadedOperators[i + 1].Operand1 = firstLoadedOp.Operand2;
                 }
             }
-
-            Console.WriteLine($"{firstLoadedOp.Operand1} {firstLoadedOp.Type} {firstLoadedOp.Operand2}");
 
             Result = OperandGroup.FromTimeSpan(firstLoadedOp.GetResult());
         }
