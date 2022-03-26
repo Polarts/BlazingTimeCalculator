@@ -49,7 +49,7 @@ namespace Data.Types.Math
             }
             if (timeSpan.TotalDays > 0)
             {
-                var days = (int)System.Math.Round(timeSpan.TotalDays - weeks * 7 - months * 30 - years * 365);
+                var days = (int)System.Math.Floor(timeSpan.TotalDays - weeks * 7 - months * 30 - years * 365);
                 group.Operands.Add(new Operand { Number = days.ToString(), Type = OperandType.Day });
             }
             if (timeSpan.Hours > 0)

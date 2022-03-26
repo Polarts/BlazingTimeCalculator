@@ -55,6 +55,8 @@
                         nextOp.Operand1 = OperandGroup.FromTimeSpan(_operator.GetResult());
                         prevOp.Operand2 = nextOp.Operand1;
                     }
+                    loadedOperators.RemoveAt(i);
+                    i--;
                 }
             }
 

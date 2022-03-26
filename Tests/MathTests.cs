@@ -75,7 +75,7 @@ namespace Tests
 
             equation.Calculate();
 
-            var expectedResult = TimeSpan.FromHours(2) + TimeSpan.FromDays(366*2);
+            var expectedResult = TimeSpan.FromHours(2) + TimeSpan.FromDays(366 * 2);
 
             Assert.AreEqual(expectedResult, equation.Result?.ToTimeSpan());
         }
@@ -240,7 +240,7 @@ namespace Tests
                         Type = "x"
                     },
                     operands[1],
-                    new Operator 
+                    new Operator
                     {
                         Type = "+"
                     },
@@ -250,6 +250,61 @@ namespace Tests
             };
 
             var expectedResult = TimeSpan.FromDays(43);
+            equation.Calculate();
+
+            Assert.AreEqual(expectedResult, equation.Result!.ToTimeSpan());
+        }
+
+        [TestMethod]
+        public void TextComplexEquation2()
+        {
+            List<OperandGroup> operands = new List<OperandGroup>
+            {
+                new OperandGroup
+                {
+                    Operands = new List<Operand>
+                    {
+                        new Operand { Number = "20", Type = OperandType.Day },
+                    }
+                },
+                new OperandGroup
+                {
+                    Operands = new List<Operand>
+                    {
+                        new Operand { Number = "2", Type = OperandType.Day }
+                    }
+                },
+                new OperandGroup
+                {
+                    Operands = new List<Operand>
+                    {
+                        new Operand { Number = "3" }
+                    }
+                },
+                new OperandGroup
+                {
+                    Operands = new List<Operand>
+                    {
+                        new Operand { Number = "4", Type = OperandType.Min }
+                    }
+                }
+            };
+
+            var equation = new Equation
+            {
+                MathComponents = new List<IMathComponent>
+                {
+                    operands[0],
+                    new Operator { Type = "+" },
+                    operands[1],
+                    new Operator { Type = "x" },
+                    operands[2],
+                    new Operator { Type = "-" },
+                    operands[3]
+                }
+            };
+
+            var expectedResult = TimeSpan.FromDays(26) - TimeSpan.FromMinutes(4);
             equation.Calculate();
 
             Assert.AreEqual(expectedResult, equation.Result!.ToTimeSpan());
