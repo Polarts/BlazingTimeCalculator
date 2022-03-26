@@ -7,6 +7,12 @@
 
 .operand-container {
     margin: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    align-self: start;
 }
 
 .operand-container span {

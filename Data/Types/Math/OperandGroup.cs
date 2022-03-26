@@ -3,6 +3,15 @@ namespace Data.Types.Math
 
     public class OperandGroup : IMathComponent
     {
+
+        #region Constants
+
+        const double DAYS_IN_MONTH = 365.0 / 12.0;
+        const double WEEKS_IN_YEAR = 365.0 / 7.0;
+        const double DAYS_IN_WEEK = 365.0 / WEEKS_IN_YEAR;
+
+        #endregion
+
         #region Properties
 
         public List<Operand> Operands { get; set; } = new List<Operand>();
@@ -33,24 +42,26 @@ namespace Data.Types.Math
             if (timeSpan.TotalDays / 365 >= 1)
             {
                 years = (int)(timeSpan.TotalDays / 365.0);
-                group.Operands.Add(new Operand { Number = years.ToString(), Type = OperandType.Year });
+                if (years > 0)
+                    group.Operands.Add(new Operand { Number = years.ToString(), Type = OperandType.Year });
             }
-            if (timeSpan.TotalDays / 30 >= 1)
+            if (timeSpan.TotalDays / DAYS_IN_MONTH >= 1)
             {
-                months = (int)(timeSpan.TotalDays / 30.0) - years * 12;
+                months = (int)(timeSpan.TotalDays / DAYS_IN_MONTH) - years * 12;
                 if (months > 0)
                     group.Operands.Add(new Operand { Number = months.ToString(), Type = OperandType.Month });
             }
-            if (timeSpan.TotalDays / 7 >= 1)
+            if (timeSpan.TotalDays / DAYS_IN_WEEK >= 1)
             {
-                weeks = (int)System.Math.Floor(timeSpan.TotalDays / 7.0 - months * 4 - years * 52);
+                weeks = (int)System.Math.Floor(timeSpan.TotalDays / DAYS_IN_WEEK - months * 4 - years * 52);
                 if (weeks > 0)
                     group.Operands.Add(new Operand { Number = weeks.ToString(), Type = OperandType.Week });
             }
             if (timeSpan.TotalDays > 0)
             {
                 var days = (int)System.Math.Floor(timeSpan.TotalDays - weeks * 7 - months * 30 - years * 365);
-                group.Operands.Add(new Operand { Number = days.ToString(), Type = OperandType.Day });
+                if (days > 0)
+                    group.Operands.Add(new Operand { Number = days.ToString(), Type = OperandType.Day });
             }
             if (timeSpan.Hours > 0)
             {

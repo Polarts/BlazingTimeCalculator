@@ -91,6 +91,12 @@
             Result = OperandGroup.FromTimeSpan(firstLoadedOp.GetResult());
         }
 
+        public void Clear()
+        {
+            MathComponents.Clear();
+            Result = null;
+        }
+
         #endregion
 
     }
