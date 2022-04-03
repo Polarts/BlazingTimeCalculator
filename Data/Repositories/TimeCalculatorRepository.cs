@@ -1,14 +1,14 @@
 ﻿
-using Data.Types.Math;
+using Data.Types.TimeCalculator;
 
 namespace Data.Repositories
 {
 
     public class TimeCalculatorRepository
     {
-        public List<Equation> EquationsHistory { get; } = new List<Equation>();
+        public List<TimeEquation> EquationsHistory { get; } = new List<TimeEquation>();
 
-        public Equation CurrentEquation { get; set; } = new Equation();
+        public TimeEquation CurrentEquation { get; set; } = new TimeEquation();
     }
 
 }

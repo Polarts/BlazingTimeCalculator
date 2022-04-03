@@ -1,17 +1,17 @@
-namespace Data.Types.Math
+namespace Data.Types.TimeCalculator
 {
-    public enum OperandType
+    public enum TimeValueType
     {
         Year, Month, Week, Day, Hour, Min, Sec, MSec
     }
 
-    public class Operand : IMathComponent
+    public class TimeValue : ITimeMathComponent
     {
         #region Properties
 
         public string Number { get; set; } = "";
 
-        public OperandType? Type { get; set; } = null;
+        public TimeValueType? Type { get; set; } = null;
 
         /// <summary>
         /// Indicates whether this operand is allowed to have a type or not.
@@ -28,28 +28,28 @@ namespace Data.Types.Math
             {
                 switch (Type)
                 {
-                    case OperandType.Year:
+                    case TimeValueType.Year:
                         return TimeSpan.FromDays(value * 365);
 
-                    case OperandType.Month:
+                    case TimeValueType.Month:
                         return TimeSpan.FromDays(value * 30);
 
-                    case OperandType.Week:
+                    case TimeValueType.Week:
                         return TimeSpan.FromDays(value * 7);
 
-                    case OperandType.Day:
+                    case TimeValueType.Day:
                         return TimeSpan.FromDays(value);
 
-                    case OperandType.Hour:
+                    case TimeValueType.Hour:
                         return TimeSpan.FromHours(value);
 
-                    case OperandType.Min:
+                    case TimeValueType.Min:
                         return TimeSpan.FromMinutes(value);
 
-                    case OperandType.Sec:
+                    case TimeValueType.Sec:
                         return TimeSpan.FromSeconds(value);
 
-                    case OperandType.MSec:
+                    case TimeValueType.MSec:
                         return TimeSpan.FromMilliseconds(value);
 
                     default: return TimeSpan.Zero;

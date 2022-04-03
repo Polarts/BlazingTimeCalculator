@@ -1,7 +1,7 @@
-namespace Data.Types.Math
+namespace Data.Types.TimeCalculator
 {
 
-    public class OperandGroup : IMathComponent
+    public class TimeValueGroup : ITimeMathComponent
     {
 
         #region Constants
@@ -14,7 +14,7 @@ namespace Data.Types.Math
 
         #region Properties
 
-        public List<Operand> Operands { get; set; } = new List<Operand>();
+        public List<TimeValue> TimeValues { get; set; } = new List<TimeValue>();
 
         /// <summary>
         /// Used to serve as the index of the operand in an equation.
@@ -27,57 +27,57 @@ namespace Data.Types.Math
 
         public TimeSpan ToTimeSpan()
         {
-            if (Operands.Count == 1 && Operands[0].Type is null)
-                return TimeSpan.FromMilliseconds(double.Parse(Operands[0].Number));
+            if (TimeValues.Count == 1 && TimeValues[0].Type is null)
+                return TimeSpan.FromMilliseconds(double.Parse(TimeValues[0].Number));
 
             return TimeSpan.FromMilliseconds(
-                Operands.Sum(o => o.ToTimeSpan().TotalMilliseconds)
+                TimeValues.Sum(o => o.ToTimeSpan().TotalMilliseconds)
             );
         }
 
-        public static OperandGroup FromTimeSpan(TimeSpan timeSpan)
+        public static TimeValueGroup FromTimeSpan(TimeSpan timeSpan)
         {
-            var group = new OperandGroup();
+            var group = new TimeValueGroup();
             int years = 0, months = 0, weeks = 0;
             if (timeSpan.TotalDays / 365 >= 1)
             {
                 years = (int)(timeSpan.TotalDays / 365.0);
                 if (years > 0)
-                    group.Operands.Add(new Operand { Number = years.ToString(), Type = OperandType.Year });
+                    group.TimeValues.Add(new TimeValue { Number = years.ToString(), Type = TimeValueType.Year });
             }
             if (timeSpan.TotalDays / DAYS_IN_MONTH >= 1)
             {
                 months = (int)(timeSpan.TotalDays / DAYS_IN_MONTH) - years * 12;
                 if (months > 0)
-                    group.Operands.Add(new Operand { Number = months.ToString(), Type = OperandType.Month });
+                    group.TimeValues.Add(new TimeValue { Number = months.ToString(), Type = TimeValueType.Month });
             }
             if (timeSpan.TotalDays / DAYS_IN_WEEK >= 1)
             {
                 weeks = (int)System.Math.Floor(timeSpan.TotalDays / DAYS_IN_WEEK - months * 4 - years * 52);
                 if (weeks > 0)
-                    group.Operands.Add(new Operand { Number = weeks.ToString(), Type = OperandType.Week });
+                    group.TimeValues.Add(new TimeValue { Number = weeks.ToString(), Type = TimeValueType.Week });
             }
             if (timeSpan.TotalDays > 0)
             {
                 var days = (int)System.Math.Floor(timeSpan.TotalDays - weeks * 7 - months * 30 - years * 365);
                 if (days > 0)
-                    group.Operands.Add(new Operand { Number = days.ToString(), Type = OperandType.Day });
+                    group.TimeValues.Add(new TimeValue { Number = days.ToString(), Type = TimeValueType.Day });
             }
             if (timeSpan.Hours > 0)
             {
-                group.Operands.Add(new Operand { Number = timeSpan.Hours.ToString(), Type = OperandType.Hour });
+                group.TimeValues.Add(new TimeValue { Number = timeSpan.Hours.ToString(), Type = TimeValueType.Hour });
             }
             if (timeSpan.Minutes > 0)
             {
-                group.Operands.Add(new Operand { Number = timeSpan.Minutes.ToString(), Type = OperandType.Min });
+                group.TimeValues.Add(new TimeValue { Number = timeSpan.Minutes.ToString(), Type = TimeValueType.Min });
             }
             if (timeSpan.Seconds > 0)
             {
-                group.Operands.Add(new Operand { Number = timeSpan.Seconds.ToString(), Type = OperandType.Sec });
+                group.TimeValues.Add(new TimeValue { Number = timeSpan.Seconds.ToString(), Type = TimeValueType.Sec });
             }
             if (timeSpan.Milliseconds > 0)
             {
-                group.Operands.Add(new Operand { Number = timeSpan.Milliseconds.ToString(), Type = OperandType.MSec });
+                group.TimeValues.Add(new TimeValue { Number = timeSpan.Milliseconds.ToString(), Type = TimeValueType.MSec });
             }
 
             return group;
@@ -85,7 +85,7 @@ namespace Data.Types.Math
 
         public override string ToString()
         {
-            return Operands
+            return TimeValues
                 .Select(x => x.ToString())
                 .Aggregate("", (accum, curr) => accum + " " + curr);
         }

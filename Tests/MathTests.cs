@@ -1,4 +1,4 @@
-using Data.Types.Math;
+using Data.Types.TimeCalculator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -8,24 +8,24 @@ namespace Tests
     [TestClass]
     public class MathTests
     {
-        static OperandGroup operand1 = new OperandGroup
+        static TimeValueGroup operand1 = new TimeValueGroup
         {
-            Operands = new List<Operand>
+            TimeValues = new List<TimeValue>
                 {
-                    new Operand
+                    new TimeValue
                     {
                         Number = "1",
-                        Type = OperandType.Year,
+                        Type = TimeValueType.Year,
                     },
-                    new Operand
+                    new TimeValue
                     {
                         Number = "1",
-                        Type = OperandType.Day,
+                        Type = TimeValueType.Day,
                     },
-                    new Operand
+                    new TimeValue
                     {
                         Number = "1",
-                        Type = OperandType.Hour
+                        Type = TimeValueType.Hour
                     }
                 }
         };
@@ -41,29 +41,29 @@ namespace Tests
         [TestMethod]
         public void TestFromTimeSpanConversion()
         {
-            Assert.AreEqual(operand1.ToString(), OperandGroup.FromTimeSpan(operand1TS).ToString());
+            Assert.AreEqual(operand1.ToString(), TimeValueGroup.FromTimeSpan(operand1TS).ToString());
         }
 
         [TestMethod]
         public void TestMultiplication()
         {
-            var operand2 = new OperandGroup
+            var operand2 = new TimeValueGroup
             {
-                Operands = new List<Operand>
+                TimeValues = new List<TimeValue>
                 {
-                    new Operand
+                    new TimeValue
                     {
                         Number = "2",
                         Type = null,
                     }
                 }
             };
-            var equation = new Equation
+            var equation = new TimeEquation
             {
-                MathComponents = new List<IMathComponent>
+                MathComponents = new List<ITimeMathComponent>
                 {
                     operand1,
-                    new Operator
+                    new TimeOperator
                     {
                         Type = "x",
                         Operand1 = operand1,
@@ -83,23 +83,23 @@ namespace Tests
         [TestMethod]
         public void TestDivision()
         {
-            var operand2 = new OperandGroup
+            var operand2 = new TimeValueGroup
             {
-                Operands = new List<Operand>
+                TimeValues = new List<TimeValue>
                 {
-                    new Operand
+                    new TimeValue
                     {
                         Number = "2",
                         Type = null,
                     }
                 }
             };
-            var equation = new Equation
+            var equation = new TimeEquation
             {
-                MathComponents = new List<IMathComponent>
+                MathComponents = new List<ITimeMathComponent>
                 {
                     operand1,
-                    new Operator
+                    new TimeOperator
                     {
                         Type = "/",
                         Operand1 = operand1,
@@ -119,29 +119,29 @@ namespace Tests
         [TestMethod]
         public void TestAddition()
         {
-            var operand2 = new OperandGroup
+            var operand2 = new TimeValueGroup
             {
-                Operands = new List<Operand>
+                TimeValues = new List<TimeValue>
                 {
-                    new Operand
+                    new TimeValue
                     {
                         Number = "1",
-                        Type = OperandType.Day
+                        Type = TimeValueType.Day
                     },
-                    new Operand
+                    new TimeValue
                     {
                         Number = "1",
-                        Type = OperandType.Month
+                        Type = TimeValueType.Month
                     }
                 }
             };
 
-            var equation = new Equation
+            var equation = new TimeEquation
             {
-                MathComponents = new List<IMathComponent>
+                MathComponents = new List<ITimeMathComponent>
                 {
                     operand1,
-                    new Operator
+                    new TimeOperator
                     {
                         Type = "+",
                         Operand1 = operand1,
@@ -162,29 +162,29 @@ namespace Tests
         [TestMethod]
         public void TestSubtraction()
         {
-            var operand2 = new OperandGroup
+            var operand2 = new TimeValueGroup
             {
-                Operands = new List<Operand>
+                TimeValues = new List<TimeValue>
                 {
-                    new Operand
+                    new TimeValue
                     {
                         Number = "1",
-                        Type = OperandType.Day
+                        Type = TimeValueType.Day
                     },
-                    new Operand
+                    new TimeValue
                     {
                         Number = "1",
-                        Type = OperandType.Month
+                        Type = TimeValueType.Month
                     }
                 }
             };
 
-            var equation = new Equation
+            var equation = new TimeEquation
             {
-                MathComponents = new List<IMathComponent>
+                MathComponents = new List<ITimeMathComponent>
                 {
                     operand1,
-                    new Operator
+                    new TimeOperator
                     {
                         Type = "-",
                         Operand1 = operand1,
@@ -205,42 +205,42 @@ namespace Tests
         [TestMethod]
         public void TestComplexEquation()
         {
-            List<OperandGroup> operands = new List<OperandGroup>
+            List<TimeValueGroup> operands = new List<TimeValueGroup>
             {
-                new OperandGroup
+                new TimeValueGroup
                 {
-                    Operands = new List<Operand>
+                    TimeValues = new List<TimeValue>
                     {
-                        new Operand { Number = "20", Type = OperandType.Day },
+                        new TimeValue { Number = "20", Type = TimeValueType.Day },
                     }
                 },
-                new OperandGroup
+                new TimeValueGroup
                 {
-                    Operands = new List<Operand>
+                    TimeValues = new List<TimeValue>
                     {
-                        new Operand { Number = "2" }
+                        new TimeValue { Number = "2" }
                     }
                 },
-                new OperandGroup
+                new TimeValueGroup
                 {
-                    Operands = new List<Operand>
+                    TimeValues = new List<TimeValue>
                     {
-                        new Operand { Number = "3", Type = OperandType.Day }
+                        new TimeValue { Number = "3", Type = TimeValueType.Day }
                     }
                 }
             };
 
-            var equation = new Equation
+            var equation = new TimeEquation
             {
-                MathComponents = new List<IMathComponent>
+                MathComponents = new List<ITimeMathComponent>
                 {
                     operands[0],
-                    new Operator
+                    new TimeOperator
                     {
                         Type = "x"
                     },
                     operands[1],
-                    new Operator
+                    new TimeOperator
                     {
                         Type = "+"
                     },
@@ -258,48 +258,48 @@ namespace Tests
         [TestMethod]
         public void TextComplexEquation2()
         {
-            List<OperandGroup> operands = new List<OperandGroup>
+            List<TimeValueGroup> operands = new List<TimeValueGroup>
             {
-                new OperandGroup
+                new TimeValueGroup
                 {
-                    Operands = new List<Operand>
+                    TimeValues = new List<TimeValue>
                     {
-                        new Operand { Number = "20", Type = OperandType.Day },
+                        new TimeValue { Number = "20", Type = TimeValueType.Day },
                     }
                 },
-                new OperandGroup
+                new TimeValueGroup
                 {
-                    Operands = new List<Operand>
+                    TimeValues = new List<TimeValue>
                     {
-                        new Operand { Number = "2", Type = OperandType.Day }
+                        new TimeValue { Number = "2", Type = TimeValueType.Day }
                     }
                 },
-                new OperandGroup
+                new TimeValueGroup
                 {
-                    Operands = new List<Operand>
+                    TimeValues = new List<TimeValue>
                     {
-                        new Operand { Number = "3" }
+                        new TimeValue { Number = "3" }
                     }
                 },
-                new OperandGroup
+                new TimeValueGroup
                 {
-                    Operands = new List<Operand>
+                    TimeValues = new List<TimeValue>
                     {
-                        new Operand { Number = "4", Type = OperandType.Min }
+                        new TimeValue { Number = "4", Type = TimeValueType.Min }
                     }
                 }
             };
 
-            var equation = new Equation
+            var equation = new TimeEquation
             {
-                MathComponents = new List<IMathComponent>
+                MathComponents = new List<ITimeMathComponent>
                 {
                     operands[0],
-                    new Operator { Type = "+" },
+                    new TimeOperator { Type = "+" },
                     operands[1],
-                    new Operator { Type = "x" },
+                    new TimeOperator { Type = "x" },
                     operands[2],
-                    new Operator { Type = "-" },
+                    new TimeOperator { Type = "-" },
                     operands[3]
                 }
             };

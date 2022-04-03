@@ -1,15 +1,15 @@
-namespace Data.Types.Math
+namespace Data.Types.TimeCalculator
 {
 
-    public class Operator : IMathComponent
+    public class TimeOperator : ITimeMathComponent
     {
         #region Properties
 
         public string? Type { get; set; }
 
-        public OperandGroup? Operand1 { get; set; }
+        public TimeValueGroup? Operand1 { get; set; }
 
-        public OperandGroup? Operand2 { get; set; }
+        public TimeValueGroup? Operand2 { get; set; }
 
         #endregion
 
@@ -29,10 +29,10 @@ namespace Data.Types.Math
                     return Operand1.ToTimeSpan() - Operand2.ToTimeSpan();
 
                 case "x":
-                    return TimeSpan.FromMilliseconds(Operand1.ToTimeSpan().TotalMilliseconds * int.Parse(Operand2.Operands[0].Number));
+                    return TimeSpan.FromMilliseconds(Operand1.ToTimeSpan().TotalMilliseconds * int.Parse(Operand2.TimeValues[0].Number));
 
                 case "/":
-                    return TimeSpan.FromMilliseconds(Operand1.ToTimeSpan().TotalMilliseconds / int.Parse(Operand2.Operands[0].Number));
+                    return TimeSpan.FromMilliseconds(Operand1.ToTimeSpan().TotalMilliseconds / int.Parse(Operand2.TimeValues[0].Number));
 
                 default: return TimeSpan.Zero;
 
