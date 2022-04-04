@@ -29,20 +29,14 @@ namespace Data.Utils
                 },
                 [TimeValueType.Day] = new Dictionary<TimeValueType, double>
                 {
-                    [TimeValueType.Hour] = 24,
-                    [TimeValueType.Min] = 24 * 60,
-                    [TimeValueType.Sec] = 24 * 60 * 60,
                     [TimeValueType.MSec] = 24 * 60 * 60 * 1000,
                 },
                 [TimeValueType.Hour] = new Dictionary<TimeValueType, double>
                 {
-                    [TimeValueType.Min] = 60,
-                    [TimeValueType.Sec] = 60 * 60,
                     [TimeValueType.MSec] = 60 * 60 * 1000,
                 },
                 [TimeValueType.Min] = new Dictionary<TimeValueType, double>
                 {
-                    [TimeValueType.Sec] = 60,
                     [TimeValueType.MSec] = 60 * 1000,
                 },
                 [TimeValueType.Sec] = new Dictionary<TimeValueType, double>
@@ -51,71 +45,54 @@ namespace Data.Utils
                 },
             };
 
-        public static TimeValue Convert(TimeValue source, TimeValueType targetType)
+        static TimeConverter()
+        {
+            foreach(var conversionRates in ConversionRatesMap.Values)
+            {
+                double value;
+                if (conversionRates.TryGetValue(TimeValueType.Day, out value))
+                {
+                    var totalHours = conversionRates[TimeValueType.Hour] = value * 24;
+                    conversionRates[TimeValueType.Min] = totalHours * 60;
+                    conversionRates[TimeValueType.Sec] = totalHours * 60 * 60;
+                    conversionRates[TimeValueType.MSec] = totalHours * 60 * 60 * 1000;
+                }
+                else if (conversionRates.TryGetValue(TimeValueType.MSec, out value))
+                {
+                    var timeSpan = TimeSpan.FromMilliseconds(value);
+                    conversionRates[TimeValueType.Sec] = timeSpan.TotalSeconds;
+                    conversionRates[TimeValueType.Min] = timeSpan.TotalMinutes;
+                    conversionRates[TimeValueType.Hour] = timeSpan.TotalHours;
+                    conversionRates[TimeValueType.Day] = timeSpan.TotalDays;
+                    conversionRates[TimeValueType.Week] = timeSpan.TotalDays / 7;
+                    conversionRates[TimeValueType.Month] = timeSpan.TotalDays / 30;
+                    conversionRates[TimeValueType.Year] = timeSpan.TotalDays / 365;
+                }
+            }
+        }
+
+        public static TimeValue? Convert(TimeValue source, TimeValueType targetType)
         {
             if (ConversionRatesMap.TryGetValue(source.Type!.Value, out var conversionRates))
             {
                 if (conversionRates.TryGetValue(targetType, out var rate))
                 {
                     var number = double.Parse(source.Number) * rate;
+                    Console.WriteLine($"{source.Number} {source.Type} to {targetType} at {rate}");
+                    if (source.Type > TimeValueType.Day) 
+                        // If the source type is less than day, rounding is required due to my lazy calculations
+                        number = Math.Round(number);
+                    
                     return new TimeValue
                     {
-                        Number = number.ToString("0.0"),
+                        Number = number.ToString(),
                         Type = targetType,
                         IsLocked = source.IsLocked
                     };
                 }
-                else
-                {
-                    if (source.Type < TimeValueType.Day && conversionRates.TryGetValue(TimeValueType.Day, out var daysRate))
-                    {
-                        double daysValue = double.Parse(source.Number) * daysRate;
-                        double? finalValue = null;
-                        switch (targetType)
-                        {
-                            case TimeValueType.Hour:
-                                finalValue = daysValue * 24;
-                                break;
-
-                            case TimeValueType.Min:
-                                finalValue = daysValue * 24 * 60;
-                                break;
-
-                            case TimeValueType.Sec:
-                                finalValue = daysValue * 24 * 60 * 60;
-                                break;
-
-                            case TimeValueType.MSec:
-                                finalValue = daysValue * 24 * 60 * 60 * 1000;
-                                break;
-                        }
-                        if (finalValue != null)
-                        {
-                            return new TimeValue
-                            {
-                                Number = finalValue!.Value.ToString("0.0"),
-                                Type = targetType,
-                                IsLocked = source.IsLocked
-                            };
-                        }
-                    } 
-                    else 
-                    {
-                        double? finalValue = null;
-                        switch (targetType)
-                        {
-
-                        }
-                    }
-                }
             }
 
-            return new TimeValue
-            {
-                Number = source.Number,
-                Type = targetType,
-                IsLocked = source.IsLocked
-            };
+            return null;
         }
     }
 }
