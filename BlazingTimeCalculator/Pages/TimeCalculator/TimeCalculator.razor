@@ -1,0 +1,174 @@
+@page "/TimeCalculator"
+@inject TimeCalculatorRepository repo
+
+<PageTitle>Time Calculator</PageTitle>
+
+<div class="time-calculator-wrapper">
+    <div class="operand-container">
+        @foreach (var mathComponent in repo.CurrentEquation.MathComponents)
+        {
+            switch(mathComponent) 
+            {
+                case TimeValueGroup _group:
+                    foreach (var _op in _group.TimeValues) 
+                    {
+                        <span class="number">@_op.Number</span><span class="operand-type">@_op.Type</span>
+                    }
+                break;
+
+                case TimeValue _operand:
+                    <span class="number">@_operand.Number</span> <span class="operand-type">@_operand.Type</span>
+                break;
+
+                case TimeOperator _operator:
+                    <span class="operator">@_operator.Type</span>;
+                break;
+            }
+        }
+    </div>
+    <div class="result-preview">
+        @if (repo.CurrentEquation.Result != null)
+        {
+            <span>= @repo.CurrentEquation.Result</span>
+        }
+    </div>
+    <div class="calculator-buttons">
+        <CalculatorButton BootstrapStyle="light" ButtonID="Clear" OnButtonClicked="onButtonClicked">
+            <b>C</b>
+        </CalculatorButton>
+        <CalculatorButton BootstrapStyle="light" ButtonID="History" OnButtonClicked="onButtonClicked">
+            <span class="oi oi-clock" aria-hidden="true"></span>
+        </CalculatorButton>
+        <CalculatorButton BootstrapStyle="light" ButtonID="Convert" OnButtonClicked="onButtonClicked">
+            <span class="oi oi-loop" aria-hidden="true"></span>
+        </CalculatorButton>
+        <CalculatorButton BootstrapStyle="light" ButtonID="Backspace" OnButtonClicked="onButtonClicked">
+            <span class="oi oi-delete" aria-hidden="true"></span>
+        </CalculatorButton>
+        @foreach (var operandType in operandTypes)
+        {
+            <CalculatorButton BootstrapStyle="primary" ButtonID="@operandType" OnButtonClicked="onButtonClicked">
+                @operandType
+            </CalculatorButton>
+        }
+        @foreach (var button in buttons) 
+        {
+            <CalculatorButton ButtonID="@button" OnButtonClicked="onButtonClicked">
+                @button
+            </CalculatorButton>
+        }
+    </div>
+</div>
+
+@code {
+
+    string[] operandTypes = Enum.GetNames(typeof(TimeValueType)).ToArray();
+    string[] buttons = {
+        "7", "8", "9", "/",
+        "4", "5", "6", "x",
+        "1", "2", "3", "-",
+        "0", ".", "=", "+"
+    };
+
+
+    void onButtonClicked(string id) {
+        var currentOperandGroup = repo.CurrentEquation.MathComponents.LastOrDefault() as TimeValueGroup;
+        var lastOperator = repo.CurrentEquation.MathComponents.LastOrDefault() as TimeOperator;
+        var lastOperand = currentOperandGroup?.TimeValues.LastOrDefault();
+        switch(id) {
+
+            case "Clear": 
+                repo.CurrentEquation.Clear();
+                break;
+
+            case "History":
+                break;
+
+            case "Convert":
+                break;
+
+            case "Backspace":
+                switch (repo.CurrentEquation.MathComponents.LastOrDefault()) 
+                {
+                    case TimeValueGroup _group:
+                        if (lastOperand is null) {
+                            repo.CurrentEquation.MathComponents.Remove(_group);
+                        } else if (lastOperand.Type != null) {
+                            lastOperand.Type = null;
+                        } else if (lastOperand.Number.Length <= 1) {
+                            _group.TimeValues.Remove(lastOperand);
+                        } else {
+                            lastOperand.Number = lastOperand.Number.Substring(0, lastOperand.Number.Length-1);
+                        }
+                        break;
+
+                    case TimeOperator _operator:
+                        repo.CurrentEquation.MathComponents.Remove(_operator);
+                        break;
+                }
+                break;
+
+            case "=":
+                if (repo.CurrentEquation.MathComponents.Any(mc => mc is TimeOperator) 
+                    && repo.CurrentEquation.MathComponents.Count(mc => mc is TimeValueGroup) >= 2)
+                {
+                    repo.CurrentEquation.Calculate();
+                } else {
+                    // TODO trigger convert
+                }
+            break;
+
+            default:
+                if (operandTypes.Contains(id)) {
+                    var selectedType = (TimeValueType)Enum.Parse(typeof(TimeValueType), id);
+                    if (currentOperandGroup != null 
+                        && lastOperand?.IsLocked == false
+                        && !currentOperandGroup.TimeValues.Any(op => op.Type == selectedType)) 
+                    {
+                        lastOperand.Type = selectedType;
+                        if (lastOperand.Number.EndsWith(".")) {
+                            lastOperand.Number = lastOperand.Number.Substring(0, lastOperand.Number.Length - 1);
+                        }
+                    }
+                }
+                if (buttons.Contains(id)) {
+                    if (int.TryParse(id, out int number)) {
+                        if (currentOperandGroup is null) 
+                        {
+                            currentOperandGroup = new TimeValueGroup();
+                            currentOperandGroup.TimeValues.Add(new TimeValue 
+                            {
+                                Number = id,
+                                IsLocked = lastOperator != null && "x/".Contains(lastOperator.Type ?? "_")
+                            });
+                            repo.CurrentEquation.MathComponents.Add(currentOperandGroup);
+                        } else {
+                            if (lastOperand is null) {
+                                currentOperandGroup.TimeValues.Add(
+                                    lastOperand = new TimeValue()
+                                );
+                            }
+                            if (lastOperand.Type is null) {
+                                lastOperand.Number += id;
+                            } else {
+                                currentOperandGroup.TimeValues.Add(new TimeValue
+                                {
+                                    Number = id
+                                });
+                            }
+                        }
+                    } else {
+                        if (id == "." && currentOperandGroup != null) {
+                            currentOperandGroup.TimeValues.Last().Number += id;
+                        } else if (lastOperator != null) {
+                            lastOperator.Type = id;
+                        } else {
+                            repo.CurrentEquation.MathComponents.Add(new TimeOperator { Type = id });
+                            currentOperandGroup = null;
+                        }
+                    }
+                }
+            break;
+        }
+    }
+}
