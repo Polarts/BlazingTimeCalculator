@@ -1,3 +1,5 @@
+using Data.Utils;
+
 namespace Data.Types.TimeCalculator
 {
 
@@ -23,7 +25,54 @@ namespace Data.Types.TimeCalculator
 
         #endregion
 
+        #region Factories
+
+        public static TimeValueGroup FromDictionary(Dictionary<TimeValueType, double> dict)
+        {
+            var result = new TimeValueGroup();
+            foreach (var kvp in dict)
+            {
+                result.TimeValues.Add(new TimeValue
+                {
+                    Number = kvp.Value.ToString(),
+                    Type = kvp.Key,
+                });
+            }
+            return result;
+        }
+
+        #endregion
+
         #region Methods
+
+        public Dictionary<TimeValueType, double>? ToValuesDict()
+        {
+            if (TimeValues.Count == 1 && TimeValues[0].Type == null) // if it's a multiplication's op2
+                return null;
+
+            var dict = new Dictionary<TimeValueType, double>();
+            foreach (var value in TimeValues)
+            {
+                dict[value.Type!.Value] = double.Parse(value.Number);
+            }
+
+            return dict;
+        }
+
+        public TimeValue ToSingleValue()
+        {
+            if (TimeValues.Count == 1 && TimeValues[0].Type == null) // if it's a multiplication's op2
+                return TimeValues[0];
+
+            var lowestValueType = TimeValues.Max(v => v.Type) ?? TimeValueType.MSec;
+            var sum = TimeValues.Select(v => TimeConverter.Convert(v, lowestValueType)).Sum(v => double.Parse(v?.Number ?? "0"));
+            return new TimeValue
+            {
+                Number = sum.ToString(),
+                Type = lowestValueType
+            };
+
+        }
 
         public TimeSpan ToTimeSpan()
         {

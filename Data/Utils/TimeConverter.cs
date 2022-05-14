@@ -94,5 +94,27 @@ namespace Data.Utils
 
             return null;
         }
+
+        public static TimeValueGroup OptimizeUpwards(TimeValue source)
+        {
+            var sourceClone = (TimeValue)source.Clone();
+            var relevantKeys = ConversionRatesMap.Keys.Where(k => k < source.Type).OrderBy(k => k);
+            Dictionary<TimeValueType, double> resultsDict = new Dictionary<TimeValueType, double>();
+            
+            foreach(var key in relevantKeys)
+            {
+                var value = Convert(sourceClone, key);
+                if (double.TryParse(value?.Number, out var number) && number > 0)
+                {
+                    var flooredNumber = Math.Floor(number); 
+                    resultsDict[key] = flooredNumber;
+                    var remainder = number - flooredNumber;
+                    sourceClone.Number = remainder.ToString();
+                    sourceClone.Type = key;
+                }
+            }
+
+            return TimeValueGroup.FromDictionary(resultsDict);
+        }
     }
 }

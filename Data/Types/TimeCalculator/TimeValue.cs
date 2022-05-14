@@ -5,7 +5,7 @@ namespace Data.Types.TimeCalculator
         Year, Month, Week, Day, Hour, Min, Sec, MSec
     }
 
-    public class TimeValue : ITimeMathComponent
+    public class TimeValue : ITimeMathComponent, ICloneable
     {
         #region Properties
 
@@ -61,6 +61,16 @@ namespace Data.Types.TimeCalculator
         public override string ToString()
         {
             return Number + " " + Type;
+        }
+
+        public object Clone()
+        {
+            return new TimeValue
+            {
+                Number = Number,
+                Type = Type,
+                IsLocked = IsLocked,
+            };
         }
 
         #endregion
